@@ -1,6 +1,7 @@
 ﻿using QRCoder;
 using QRContactGenerator.Models;
 using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
@@ -9,25 +10,47 @@ namespace QRContactGenerator
 {
     class Program
     {
+        private const string _errorNoFileSpecified = "Please specify a JSON file to create the QR codes";
+
         static void Main(string[] args)
         {
+
             if (args.Length <= 0 || args == null)
             {
-                Console.WriteLine("Please specify a json file to create the QR codes");
+                DisplayUsage();
+                Console.WriteLine(_errorNoFileSpecified);
                 return;
             }
 
             var filename = args[0];
+            string path;
+            if (args.Length == 1)
+            {
+                path = Directory.GetCurrentDirectory();
+            }
+            else
+            {
+                path = args[1];
+            }
+
             try
             {
+
                 var people = Data.LoadPeople(filename);
 
                 if (people != null)
                 {
+
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
                     foreach (var person in people)
                     {
-                        Console.Write($"Creating QR vCard for {person.Firstname} {person.Lastname} ({person.Organisation})... ");
-                        CreateAndDisplayQRCode(person);
+                        var personInfo = $"{person.Firstname} {person.Lastname} ({person.Organisation})";
+                        Console.Write($"Creating QR vCard for {personInfo}... ");
+                        SaveQRCodeImage(CreateQRCode(person), path, personInfo);
                         Console.WriteLine("done!");
                     }
                 }
@@ -38,7 +61,7 @@ namespace QRContactGenerator
             }
         }
 
-        private static void CreateAndDisplayQRCode(PersonModel person, int pixels = 20)
+        private static Image CreateQRCode(PersonModel person, int pixels = 20)
         {
             StringBuilder payload = new();
             payload.AppendLine($"BEGIN:VCARD");
@@ -61,10 +84,19 @@ namespace QRContactGenerator
 
             var _qrCodeImage = qrCode.GetGraphic(pixels);
 
-            var image = _qrCodeImage;
-            var filename = $"{person.Firstname} {person.Lastname} ({person.Organisation})";
+            return _qrCodeImage;
+        }
+        private static void SaveQRCodeImage(Image image, string path, string filename)
+        {
+            filename = Path.Combine(path, filename);
             image.Save($"{filename}.png", ImageFormat.Png);
+        }
 
+        private static void DisplayUsage()
+        {
+            Console.WriteLine($"usage: QRContactGenerator data_file output_folder");
+            Console.WriteLine($"\t data file in JSON");
+            Console.WriteLine($"\t output folder [optional]");
         }
     }
 }
