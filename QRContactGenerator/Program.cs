@@ -46,8 +46,8 @@ namespace QRContactGenerator
                     {
                         var personInfo = $"{person.Firstname} {person.Lastname} ({person.Organisation})";
                         Console.Write($"Creating QR vCard for {personInfo}... ");
-                        var p = QRCoder.CreateQRCode(person);
-                        QRCoder.SaveQRCodeImage(p, path, personInfo);
+                        var qrCodeImage = QRCoder.CreateQRCode(person);
+                        QRCoder.SaveQRCodeImage(qrCodeImage, path, personInfo);
 
                         Console.WriteLine("done!");
                     }

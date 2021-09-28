@@ -10,11 +10,11 @@ namespace QRContactGenerator
 {
     class QRCoder
     {
-        public static Image CreateQRCode(PersonModel person, int pixels = 20)
+        public static Image CreateQRCode(PersonModel person)
         {
 
             var payload = GenerateVCard(person);
-            return GenerateQRImage(payload, pixels);
+            return GenerateQRImage(payload);
         }
 
         public static void SaveQRCodeImage(Image image, string path, string filename)
@@ -23,7 +23,7 @@ namespace QRContactGenerator
             image.Save($"{filename}.png", ImageFormat.Png);
         }
 
-        private static Image GenerateQRImage(string payload, int pixels)
+        private static Image GenerateQRImage(string payload, int pixels = 20)
         {
             QRCodeGenerator qrCodeGenerator = new();
             QRCodeData qrCodeData = qrCodeGenerator.CreateQrCode(payload.ToString(), QRCodeGenerator.ECCLevel.Q);
