@@ -12,6 +12,30 @@ namespace QRContactGenerator
     {
         public static Image CreateQRCode(PersonModel person, int pixels = 20)
         {
+
+            var payload = GenerateVCard(person);
+            return GenerateQRImage(payload, pixels);
+        }
+
+        public static void SaveQRCodeImage(Image image, string path, string filename)
+        {
+            filename = Path.Combine(path, filename);
+            image.Save($"{filename}.png", ImageFormat.Png);
+        }
+
+        private static Image GenerateQRImage(string payload, int pixels)
+        {
+            QRCodeGenerator qrCodeGenerator = new();
+            QRCodeData qrCodeData = qrCodeGenerator.CreateQrCode(payload.ToString(), QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new(qrCodeData);
+
+            var _qrCodeImage = qrCode.GetGraphic(pixels);
+
+            return _qrCodeImage;
+        }
+
+        private static string GenerateVCard(PersonModel person)
+        {
             StringBuilder payload = new();
             payload.AppendLine($"BEGIN:VCARD");
             payload.AppendLine($"VERSION:3.0");
@@ -27,18 +51,8 @@ namespace QRContactGenerator
             payload.AppendLine($"REV:{DateTime.Now:s}");
             payload.AppendLine($"END:VCARD");
 
-            QRCodeGenerator qrCodeGenerator = new();
-            QRCodeData qrCodeData = qrCodeGenerator.CreateQrCode(payload.ToString(), QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new(qrCodeData);
-
-            var _qrCodeImage = qrCode.GetGraphic(pixels);
-
-            return _qrCodeImage;
+            return payload.ToString();
         }
-        public static void SaveQRCodeImage(Image image, string path, string filename)
-        {
-            filename = Path.Combine(path, filename);
-            image.Save($"{filename}.png", ImageFormat.Png);
-        }
+
     }
 }
