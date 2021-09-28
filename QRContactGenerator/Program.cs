@@ -18,7 +18,7 @@ namespace QRContactGenerator
             }
 
             var filename = args[0];
-            if (File.Exists(filename))
+            try
             {
                 var people = Data.LoadPeople(filename);
 
@@ -30,12 +30,12 @@ namespace QRContactGenerator
                         CreateAndDisplayQRCode(person);
                         Console.WriteLine("done!");
                     }
-#if DEBUG
-                    Console.WriteLine("Press enter to finish");
-                    Console.ReadLine();
                 }
             }
-#endif
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine($"Cannot find file {filename}");
+            }
         }
 
         private static void CreateAndDisplayQRCode(PersonModel person, int pixels = 20)

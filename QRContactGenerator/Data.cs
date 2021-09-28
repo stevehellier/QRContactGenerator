@@ -7,10 +7,6 @@ namespace QRContactGenerator
 {
     public class Data
     {
-        public static string SavePeople(IList<PersonModel> contacts)
-        {
-            return JsonSerializer.Serialize(contacts);
-        }
         public static IList<PersonModel> LoadPeople(string filename)
         {
             if (!File.Exists(filename))
