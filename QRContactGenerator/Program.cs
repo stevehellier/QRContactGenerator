@@ -18,7 +18,7 @@ namespace QRContactGenerator
 
             if (args.Length <= 0 || args == null)
             {
-                DisplayUsage();
+                Help.DisplayUsage();
                 Console.WriteLine(_errorNoFileSpecified);
                 return;
             }
@@ -86,7 +86,7 @@ namespace QRContactGenerator
 
             QRCodeGenerator qrCodeGenerator = new();
             QRCodeData qrCodeData = qrCodeGenerator.CreateQrCode(payload.ToString(), QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new(qrCodeData);
+            QR qrCode = new(qrCodeData);
 
             var _qrCodeImage = qrCode.GetGraphic(pixels);
 
@@ -98,11 +98,6 @@ namespace QRContactGenerator
             image.Save($"{filename}.png", ImageFormat.Png);
         }
 
-        private static void DisplayUsage()
-        {
-            Console.WriteLine($"usage: QRContactGenerator data_file output_folder");
-            Console.WriteLine($"\t data file in JSON");
-            Console.WriteLine($"\t output folder [optional]");
-        }
+
     }
 }
