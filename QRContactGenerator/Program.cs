@@ -5,7 +5,8 @@ namespace QRContactGenerator
 {
     class Program
     {
-        private const string _errorNoFileSpecified = "Please specify a JSON file to create the QR codes";
+        private const string _errorNoFileSpecified = "Please specify a JSON file to use";
+        private const string _errorFileNotFound = "Cannot find file {0}";
 
         static void Main(string[] args)
         {
@@ -45,14 +46,24 @@ namespace QRContactGenerator
                     {
                         var personInfo = $"{person.Firstname} {person.Lastname} ({person.Organisation})";
                         Console.Write($"Creating QR vCard for {personInfo}... ");
-                        QRCoder.SaveQRCodeImage(QRCoder.CreateQRCode(person), path, personInfo);
+                        var p = QRCoder.CreateQRCode(person);
+                        QRCoder.SaveQRCodeImage(p, path, personInfo);
+
                         Console.WriteLine("done!");
                     }
+                }
+                else
+                {
+                    Console.WriteLine("No data found, unable to create QR Code!");
                 }
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine($"Cannot find file {filename}");
+                Console.WriteLine(_errorFileNotFound, filename);
+            }
+            catch
+            {
+                Console.WriteLine("Invalid JSON file");
             }
         }
 

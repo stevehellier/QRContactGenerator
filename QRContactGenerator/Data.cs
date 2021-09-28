@@ -9,16 +9,21 @@ namespace QRContactGenerator
     {
         public static IList<PersonModel> LoadPeople(string filename)
         {
+            _ = new List<PersonModel>();
+            string json;
+
             if (!File.Exists(filename))
             {
                 throw new FileNotFoundException(filename);
             }
-            var json = File.ReadAllText(filename);
 
-            var people = JsonSerializer.Deserialize<IList<PersonModel>>(json);
+            IList<PersonModel> people;
+
+            json = File.ReadAllText(filename);
+
+            people = JsonSerializer.Deserialize<IList<PersonModel>>(json);
 
             return people;
-
         }
     }
 }
