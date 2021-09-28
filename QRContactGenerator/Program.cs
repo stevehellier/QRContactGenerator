@@ -14,6 +14,7 @@ namespace QRContactGenerator
 
         static void Main(string[] args)
         {
+            Console.CancelKeyPress += Console_CancelKeyPress;
 
             if (args.Length <= 0 || args == null)
             {
@@ -59,6 +60,11 @@ namespace QRContactGenerator
             {
                 Console.WriteLine($"Cannot find file {filename}");
             }
+        }
+
+        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            Console.WriteLine("Quitting...");
         }
 
         private static Image CreateQRCode(PersonModel person, int pixels = 20)
